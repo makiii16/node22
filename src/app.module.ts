@@ -5,22 +5,29 @@ import { UserModule } from './user/user.module';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
+import { PostModule } from './post/post.module';
+import { SubjectModule } from './subject/subject.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UserModule,
-      TypeOrmModule.forRoot({
+  imports: [
+    ConfigModule.forRoot(), // ConfigModule.forRoot({isGlobal: true})
+    UserModule,
+    TypeOrmModule.forRoot({
       type: 'postgres',
-      host: '194.249.251.33',
-      port: 5432,
-      username: 'sum2201',
-      password: 'Univ3s3+100',
-      database: 'node22-marta',
-          autoLoadEntities: true,
-          entities: [],
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT,10),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      autoLoadEntities: true,
+      entities: [ ],
       synchronize: true,
     }),
-      AuthModule,
-      CommonModule,
+    AuthModule,
+    CommonModule,
+    PostModule,
+    SubjectModule,
   ],
   controllers: [AppController],
   providers: [AppService],
